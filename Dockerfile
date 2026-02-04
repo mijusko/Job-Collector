@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     lsb-release \
     libnss3 \
-    libgconf-2-4 \
+    libgbm1 \
     libxss1 \
     libasound2 \
     libxtst6 \
