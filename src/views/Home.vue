@@ -3,7 +3,7 @@
     <div class="hero">
       <div class="hero-content">
         <h1>JobCollector</h1>
-        <p class="subtitle">Svi IT poslovi sa helloworld.rs na jednom mestu.</p>
+        <p class="subtitle">Svi IT poslovi sa helloworld.rs i infostud.com sajtova na jednom mestu.</p>
         <p class="description">
           Pretražite najnovije oglase za posao, filtrirajte po lokaciji i saznajte detalje 
           brzo i lako uz naš automatizovani sistem za pretragu.
@@ -26,7 +26,7 @@
       <div class="feature-card">
         <span class="feature-icon">🔍</span>
         <h3>Brza pretraga</h3>
-        <p>Direktno pretraživanje helloworld.rs platforme u realnom vremenu.</p>
+        <p>Direktno pretraživanje helloworld.rs i infostud.com platforme u realnom vremenu.</p>
       </div>
       <div class="feature-card">
         <span class="feature-icon">📍</span>
