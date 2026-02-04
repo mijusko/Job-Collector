@@ -1,0 +1,25 @@
+# Node modules
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env/
+
+# Debug files
+*_debug.html
+oldFiles.txt
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.log
