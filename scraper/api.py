@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from scraper import scrape_all
 import uvicorn
+import os
 
 app = FastAPI()
 
@@ -25,4 +26,5 @@ async def scrape(query: str = Query(None), location: str = Query(None)):
     return jobs
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    port = int(os.environ.get("PORT", 8001))
+    uvicorn.run(app, host="0.0.0.0", port=port)

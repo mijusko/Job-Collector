@@ -78,7 +78,8 @@ const searchJobs = async () => {
   loading.value = true
   searched.value = true
   try {
-    const response = await axios.get('http://localhost:8001/scrape', {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001'
+    const response = await axios.get(`${apiUrl}/scrape`, {
       params: {
         query: searchQuery.value,
         location: location.value
@@ -89,8 +90,12 @@ const searchJobs = async () => {
   } catch (error) {
     console.error('Greška pri pretrazi:', error)
     // Fallback na dummy podatke ako scraper nije pokrenut (za demo)
-    if (error.code === 'ERR_NETWORK') {
-      alert('Napomena: Python scraper API nije pokrenut na localhost:8001. Prikazujem demo podatke.')
+    if (error.code === 'ERR_NETWORK' || error.response?.status === 500) {
+      const isLocal = window.location.hostname === 'localhost'
+      const message = isLocal 
+        ? 'Napomena: Python scraper API nije pokrenut na localhost:8001. Prikazujem demo podatke.'
+        : 'Došlo je do greške pri komunikaciji sa serverom. Prikazujem demo podatke.'
+      alert(message)
       jobs.value = [
         { id: '1', title: 'Senior Python Developer', company: 'Tech Solutions d.o.o.', location: 'Beograd', date: 'Pre 2 dana', url: 'https://helloworld.rs', description: 'Ovo je demo podatak jer API nije dostupan.' },
         { id: '2', title: 'Frontend Vue.js Inženjer', company: 'Innovate IT', location: 'Novi Sad', date: 'Danas', url: 'https://helloworld.rs', description: 'Ovo je demo podatak jer API nije dostupan.' }
