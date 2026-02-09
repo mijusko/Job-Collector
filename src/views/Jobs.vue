@@ -17,7 +17,7 @@
       <div class="progress-container">
         <div class="progress-bar" :style="{ width: progress + '%' }"></div>
       </div>
-      <p>{{ progress }}% - Pretražujem HelloWorld i Infostud...</p>
+      <p class="progress-text">{{ progress }}% - Pretražujem HelloWorld i Infostud...</p>
       <p class="sub-text">Ovo može potrajati par sekundi dok Selenium učita stranice.</p>
     </div>
 
@@ -320,6 +320,12 @@ h2 {
   transition: width 0.5s ease;
 }
 
+.progress-text {
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
 .sub-text {
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -445,6 +451,7 @@ h2 {
   padding: 15px;
   background: var(--hover-bg);
   border-radius: 8px;
+  color: var(--text-primary);
 }
 
 .modal-description {

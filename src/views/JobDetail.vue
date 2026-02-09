@@ -65,7 +65,7 @@ onMounted(() => {
   display: flex;
   gap: 20px;
   margin-bottom: 20px;
-  color: #666;
+  color: #ffbb00;
 }
 .description {
   margin: 30px 0;
