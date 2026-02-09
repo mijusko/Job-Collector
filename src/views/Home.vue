@@ -12,7 +12,6 @@
         </router-link>
       </div>
       <div class="hero-image">
-        <!-- Możemo dodati neku ilustraciju ovde -->
         <div class="illustration">
           <div class="card card-1"></div>
           <div class="card card-2"></div>
@@ -33,9 +32,9 @@
         <p>Optimizovana pretraga direktno po ključnim rečima za najbrže rezultate.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">⚡</span>
-        <h3>Bez naloga</h3>
-        <p>Pristupite svim informacijama bez potrebe za registracijom.</p>
+        <span class="feature-icon">🌙</span>
+        <h3>Dark Mode</h3>
+        <p>Uživajte u pretrazi uz podršku za tamnu i svetlu temu prilagođenu vama.</p>
       </div>
     </div>
   </div>
@@ -61,19 +60,19 @@
 h1 {
   font-size: 3.5rem;
   margin: 0;
-  color: #1a73e8;
+  color: var(--accent-color);
 }
 
 .subtitle {
   font-size: 1.5rem;
-  color: #4a4a4a;
+  color: var(--text-primary);
   margin: 10px 0 20px 0;
   font-weight: 500;
 }
 
 .description {
   font-size: 1.1rem;
-  color: #70757a;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 30px;
   max-width: 500px;
@@ -82,7 +81,19 @@ h1 {
 .cta-button {
   padding: 15px 40px;
   font-size: 1.2rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
   box-shadow: 0 4px 14px rgba(26, 115, 232, 0.4);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
 }
 
 .hero-image {
@@ -99,30 +110,30 @@ h1 {
 
 .card {
   position: absolute;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  border: 1px solid #eee;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-.card-1 { width: 200px; height: 100px; top: 0; right: 0; transform: rotate(5deg); background: #f8fbff; }
-.card-2 { width: 200px; height: 100px; top: 60px; left: 0; transform: rotate(-5deg); z-index: 1; }
-.card-3 { width: 180px; height: 80px; bottom: 0; right: 20px; transform: rotate(2deg); background: #e8f0fe; }
+.card-1 { width: 200px; height: 120px; top: 0; left: 0; z-index: 3; }
+.card-2 { width: 180px; height: 100px; top: 50px; left: 60px; z-index: 2; opacity: 0.8; }
+.card-3 { width: 160px; height: 80px; top: 100px; left: 120px; z-index: 1; opacity: 0.6; }
 
 .features {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
   margin-top: 60px;
 }
 
 .feature-card {
-  background: white;
+  background: var(--card-bg);
   padding: 30px;
-  border-radius: 12px;
+  border-radius: 16px;
   text-align: center;
-  border: 1px solid #eee;
-  transition: transform 0.3s ease;
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s;
 }
 
 .feature-card:hover {
@@ -131,36 +142,18 @@ h1 {
 
 .feature-icon {
   font-size: 2.5rem;
+  margin-bottom: 20px;
   display: block;
-  margin-bottom: 15px;
 }
 
 .feature-card h3 {
-  margin: 10px 0;
-  color: #1c1e21;
+  margin: 0 0 15px 0;
+  color: var(--text-primary);
 }
 
 .feature-card p {
-  color: #70757a;
-  font-size: 0.95rem;
+  color: var(--text-secondary);
   line-height: 1.5;
-}
-
-@media (max-width: 992px) {
-  .hero {
-    flex-direction: column;
-    text-align: center;
-  }
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .features {
-    grid-template-columns: 1fr;
-  }
-  .hero-image {
-    display: none;
-  }
+  margin: 0;
 }
 </style>

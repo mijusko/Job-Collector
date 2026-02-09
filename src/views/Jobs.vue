@@ -27,7 +27,7 @@
           <p class="found-jobs">Pronađeno poslova: <strong>{{ jobs.length }}</strong></p>
         </div>
         <div class="job-list">
-        <div v-for="job in jobs" :key="job.id" class="job-card-horizontal" @click="viewDetails(job)">
+        <div v-for="job in jobs" :key="job.id" class="job-card-horizontal" @click="showJobModal(job)">
           <div class="card-content">
             <div class="main-info">
               <div class="job-source" :class="job.source.toLowerCase()">{{ job.source }}</div>
@@ -46,7 +46,7 @@
             </div>
           </div>
           <div class="card-action">
-            <button class="secondary-btn" @click.stop="viewDetails(job)">Pogledaj detalje</button>
+            <button class="secondary-btn" @click.stop="showJobModal(job)">Pogledaj detalje</button>
           </div>
         </div>
       </div>
@@ -55,31 +55,65 @@
         <p>Nismo pronašli poslove za vašu pretragu. Pokušajte sa drugim ključnim rečima.</p>
       </div>
     </div>
+
+    <!-- Modal za detalje posla -->
+    <div v-if="selectedJob" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <div class="job-source" :class="selectedJob.source.toLowerCase()">{{ selectedJob.source }}</div>
+          <button class="close-btn" @click="closeModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h2 class="modal-title">{{ selectedJob.title }}</h2>
+          <h3 class="modal-company">{{ selectedJob.company }}</h3>
+          
+          <div class="modal-meta">
+            <div class="meta-item">
+              <span class="icon">📍</span>
+              <span>{{ selectedJob.location }}</span>
+            </div>
+            <div class="meta-item" v-if="selectedJob.date">
+              <span class="icon">📅</span>
+              <span>{{ selectedJob.date }}</span>
+            </div>
+          </div>
+
+          <div class="modal-description" v-if="selectedJob.description">
+            <h4>Opis posla:</h4>
+            <p>{{ selectedJob.description }}</p>
+          </div>
+
+          <div class="modal-footer">
+            <a :href="selectedJob.url" target="_blank" class="primary-btn apply-btn">Prijavi se na sajtu</a>
+            <button @click="closeModal" class="secondary-btn">Zatvori</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import axios from 'axios'
 
-const router = useRouter()
 const searchQuery = ref('')
 const loading = ref(false)
 const searched = ref(false)
 const jobs = ref([])
 const progress = ref(0)
+const selectedJob = ref(null)
 let progressInterval = null
 
 const startProgress = () => {
   progress.value = 0
   progressInterval = setInterval(() => {
     if (progress.value < 95) {
-      // Brže na početku, sporije pri kraju
-      const increment = progress.value < 50 ? 5 : (progress.value < 80 ? 2 : 0.5)
+      // Još sporije napredovanje do 95%
+      const increment = progress.value < 40 ? 2 : (progress.value < 70 ? 0.8 : 0.2)
       progress.value = Math.min(95, parseFloat((progress.value + increment).toFixed(1)))
     }
-  }, 500)
+  }, 600)
 }
 
 const stopProgress = () => {
@@ -87,6 +121,16 @@ const stopProgress = () => {
     clearInterval(progressInterval)
     progress.value = 100
   }
+}
+
+const showJobModal = (job) => {
+  selectedJob.value = job
+  document.body.style.overflow = 'hidden' // Spreči skrolovanje dok je modal otvoren
+}
+
+const closeModal = () => {
+  selectedJob.value = null
+  document.body.style.overflow = 'auto'
 }
 
 const searchJobs = async () => {
@@ -127,10 +171,7 @@ const searchJobs = async () => {
   }
 }
 
-const viewDetails = (job) => {
-  localStorage.setItem('selectedJob', JSON.stringify(job))
-  router.push({ name: 'job-detail', params: { id: job.id } })
-}
+
 </script>
 
 <style scoped>
@@ -139,17 +180,18 @@ const viewDetails = (job) => {
 }
 
 .header-section {
-  background: white;
+  background: var(--card-bg);
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   margin-bottom: 40px;
+  border: 1px solid var(--border-color);
 }
 
 h2 {
   margin-top: 0;
   margin-bottom: 25px;
-  color: #1a73e8;
+  color: var(--accent-color);
 }
 
 .search-filters {
@@ -177,16 +219,16 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--card-bg);
   padding: 24px;
   border-radius: 10px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .job-card-horizontal:hover {
-  border-color: #1a73e8;
+  border-color: var(--accent-color);
   box-shadow: 0 4px 12px rgba(26, 115, 232, 0.1);
   transform: translateY(-2px);
 }
@@ -198,7 +240,7 @@ h2 {
 .job-title {
   margin: 0 0 8px 0;
   font-size: 1.25rem;
-  color: #1a73e8;
+  color: var(--accent-color);
 }
 
 .job-source {
@@ -224,14 +266,14 @@ h2 {
 .company-name {
   margin: 0 0 16px 0;
   font-weight: 600;
-  color: #4a4a4a;
+  color: var(--text-primary);
 }
 
 .meta-data {
   display: flex;
   gap: 20px;
   font-size: 0.9rem;
-  color: #70757a;
+  color: var(--text-secondary);
 }
 
 .meta-item {
@@ -242,12 +284,12 @@ h2 {
 
 .secondary-btn {
   background-color: transparent;
-  color: #1a73e8;
-  border: 1.5px solid #1a73e8;
+  color: var(--accent-color);
+  border: 1.5px solid var(--accent-color);
 }
 
 .secondary-btn:hover {
-  background-color: #f8fbff;
+  background-color: var(--hover-bg);
 }
 
 .loading-state {
@@ -256,16 +298,17 @@ h2 {
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color);
 }
 
 .progress-container {
   width: 100%;
   max-width: 400px;
   height: 12px;
-  background-color: #f0f0f0;
+  background-color: var(--hover-bg);
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 20px;
@@ -273,13 +316,13 @@ h2 {
 
 .progress-bar {
   height: 100%;
-  background-color: #1a73e8;
+  background-color: var(--accent-color);
   transition: width 0.5s ease;
 }
 
 .sub-text {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 5px;
 }
 
@@ -290,19 +333,19 @@ h2 {
 
 .found-jobs {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .found-jobs strong {
-  color: #1a73e8;
+  color: var(--accent-color);
   font-size: 1.3rem;
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #1a73e8;
+  border: 4px solid var(--hover-bg);
+  border-top: 4px solid var(--accent-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -316,6 +359,130 @@ h2 {
 .no-results {
   text-align: center;
   padding: 40px;
-  color: #70757a;
+  color: var(--text-secondary);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--card-bg);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  border-radius: 16px;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border: 1px solid var(--border-color);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 30px;
+}
+
+.modal-title {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+  color: var(--accent-color);
+}
+
+.modal-company {
+  margin: 0 0 20px 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.modal-meta {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: var(--hover-bg);
+  border-radius: 8px;
+}
+
+.modal-description {
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+  white-space: pre-wrap;
+}
+
+.modal-description h4 {
+  margin-bottom: 15px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.primary-btn {
+  background-color: var(--accent-color);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.primary-btn:hover {
+  opacity: 0.9;
+}
+
+.apply-btn {
+  flex: 1;
+  text-align: center;
 }
 </style>
