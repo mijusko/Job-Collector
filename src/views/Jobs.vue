@@ -50,7 +50,8 @@
           </div>
         </div>
       </div>
-      <div v-else-if="searched" class="no-results">
+    </div>
+    <div v-else-if="searched" class="no-results">
         <p>Nismo pronašli poslove za vašu pretragu. Pokušajte sa drugim ključnim rečima.</p>
       </div>
     </div>
