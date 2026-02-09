@@ -20,9 +20,9 @@ async def root():
     return {"message": "JobCollector API is running"}
 
 @app.get("/scrape")
-async def scrape(query: str = Query(None), location: str = Query(None)):
-    print(f"Received request: query={query}, location={location}")
-    jobs = scrape_all(query, location)
+async def scrape(query: str = Query(None)):
+    print(f"Received request: query={query}")
+    jobs = scrape_all(query)
     return jobs
 
 if __name__ == "__main__":

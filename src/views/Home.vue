@@ -5,8 +5,7 @@
         <h1>JobCollector</h1>
         <p class="subtitle">Svi IT poslovi sa helloworld.rs i infostud.com sajtova na jednom mestu.</p>
         <p class="description">
-          Pretražite najnovije oglase za posao, filtrirajte po lokaciji i saznajte detalje 
-          brzo i lako uz naš automatizovani sistem za pretragu.
+          Pretražite najnovije oglase za IT poslove brzo i lako uz naš automatizovani sistem za pretragu u realnom vremenu.
         </p>
         <router-link to="/jobs">
           <button class="cta-button">Započni pretragu</button>
@@ -29,9 +28,9 @@
         <p>Direktno pretraživanje helloworld.rs i infostud.com platforme u realnom vremenu.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">📍</span>
-        <h3>Filteri</h3>
-        <p>Lako filtriranje poslova po gradovima i remote opcijama.</p>
+        <span class="feature-icon">⚡</span>
+        <h3>Brzina</h3>
+        <p>Optimizovana pretraga direktno po ključnim rečima za najbrže rezultate.</p>
       </div>
       <div class="feature-card">
         <span class="feature-icon">⚡</span>

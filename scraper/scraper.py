@@ -25,11 +25,10 @@ def get_driver():
     
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-def scrape_helloworld(driver, query, location=""):
+def scrape_helloworld(driver, query):
     base_url = "https://www.helloworld.rs/oglasi-za-posao"
     params = {}
     if query: params['q'] = query
-    if location: params['grad'] = location
     
     url = f"{base_url}?{urllib.parse.urlencode(params)}" if params else base_url
     print(f"Scraping HelloWorld: {url}")
@@ -81,11 +80,10 @@ def scrape_helloworld(driver, query, location=""):
         print(f"HelloWorld error: {e}")
     return jobs
 
-def scrape_infostud(driver, query, location=""):
+def scrape_infostud(driver, query):
     base_url = "https://poslovi.infostud.com/oglasi-za-posao"
     params = {}
     if query: params['q'] = query
-    if location: params['grad'] = location
     
     url = f"{base_url}?{urllib.parse.urlencode(params)}" if params else base_url
     print(f"Scraping Infostud: {url}")
@@ -155,13 +153,13 @@ def scrape_infostud(driver, query, location=""):
     print(f"Infostud found {len(jobs)} valid jobs")
     return jobs
 
-def scrape_all(query, location=""):
-    print(f"DEBUG: scrape_all called with query='{query}', location='{location}'")
+def scrape_all(query):
+    print(f"DEBUG: scrape_all called with query='{query}'")
     driver = get_driver()
     all_jobs = []
     try:
-        all_jobs.extend(scrape_helloworld(driver, query, location))
-        all_jobs.extend(scrape_infostud(driver, query, location))
+        all_jobs.extend(scrape_helloworld(driver, query))
+        all_jobs.extend(scrape_infostud(driver, query))
     finally:
         driver.quit()
     

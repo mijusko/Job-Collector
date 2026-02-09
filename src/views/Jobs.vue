@@ -6,16 +6,6 @@
         <div class="input-group">
           <input v-model="searchQuery" placeholder="Pozicija, tehnologija (npr. Python, Vue)..." @keyup.enter="searchJobs" />
         </div>
-        <div class="input-group">
-          <select v-model="location">
-            <option value="">Sve lokacije</option>
-            <option value="beograd">Beograd</option>
-            <option value="novi-sad">Novi Sad</option>
-            <option value="nis">Niš</option>
-            <option value="kragujevac">Kragujevac</option>
-            <option value="remote">Remote</option>
-          </select>
-        </div>
         <button @click="searchJobs" :disabled="loading">
           <span v-if="!loading">Pretraži</span>
           <span v-else class="loader"></span>
@@ -24,12 +14,19 @@
     </div>
 
     <div v-if="loading" class="loading-state">
-      <div class="spinner"></div>
-      <p>Pretražujem HelloWorld i Infostud... Ovo može potrajati par sekundi.</p>
+      <div class="progress-container">
+        <div class="progress-bar" :style="{ width: progress + '%' }"></div>
+      </div>
+      <p>{{ progress }}% - Pretražujem HelloWorld i Infostud...</p>
+      <p class="sub-text">Ovo može potrajati par sekundi dok Selenium učita stranice.</p>
     </div>
 
     <div v-else class="results-section">
-      <div v-if="jobs.length > 0" class="job-list">
+      <div v-if="jobs.length > 0">
+        <div class="results-header">
+          <p class="found-jobs">Pronađeno poslova: <strong>{{ jobs.length }}</strong></p>
+        </div>
+        <div class="job-list">
         <div v-for="job in jobs" :key="job.id" class="job-card-horizontal" @click="viewDetails(job)">
           <div class="card-content">
             <div class="main-info">
@@ -67,22 +64,42 @@ import axios from 'axios'
 
 const router = useRouter()
 const searchQuery = ref('')
-const location = ref('')
 const loading = ref(false)
 const searched = ref(false)
 const jobs = ref([])
+const progress = ref(0)
+let progressInterval = null
+
+const startProgress = () => {
+  progress.value = 0
+  progressInterval = setInterval(() => {
+    if (progress.value < 95) {
+      // Brže na početku, sporije pri kraju
+      const increment = progress.value < 50 ? 5 : (progress.value < 80 ? 2 : 0.5)
+      progress.value = Math.min(95, parseFloat((progress.value + increment).toFixed(1)))
+    }
+  }, 500)
+}
+
+const stopProgress = () => {
+  if (progressInterval) {
+    clearInterval(progressInterval)
+    progress.value = 100
+  }
+}
 
 const searchJobs = async () => {
   if (loading.value) return
   
   loading.value = true
   searched.value = true
+  startProgress()
+  
   try {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001'
     const response = await axios.get(`${apiUrl}/scrape`, {
       params: {
-        query: searchQuery.value,
-        location: location.value
+        query: searchQuery.value
       },
       timeout: 120000 // Povećan timeout na 2 minuta jer je scraping spor
     })
@@ -102,7 +119,10 @@ const searchJobs = async () => {
       ]
     }
   } finally {
-    loading.value = false
+    stopProgress()
+    setTimeout(() => {
+      loading.value = false
+    }, 500)
   }
 }
 
@@ -230,8 +250,51 @@ h2 {
 }
 
 .loading-state {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.progress-container {
+  width: 100%;
+  max-width: 400px;
+  height: 12px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #1a73e8;
+  transition: width 0.5s ease;
+}
+
+.sub-text {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.results-header {
+  margin-bottom: 20px;
+  padding: 0 5px;
+}
+
+.found-jobs {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.found-jobs strong {
+  color: #1a73e8;
+  font-size: 1.3rem;
 }
 
 .spinner {
